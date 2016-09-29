@@ -17,12 +17,46 @@ while(cards.length > 0) {
   board.push({card: cards[index], flip: true});
   cards.splice(index, 1);
 }
-console.log(board);
+var state = "waiting for click 1";
+var scores = [0,0];
+var payer = 0;
+var card1, card2;
+
 
 // TODO: Place the cards on the board in random order
 
 canvas.onclick = function(event) {
   event.preventDefault();
+  var x = Math.floor((event.clientX - 3)/165);
+  var y = Math.floor((event.clientY - 3)/165);
+  var card = board[y * 6 + x];
+  if(!card || card.flip) return;
+  card.flip = true;
+  switch (state) {
+    case "waiting for click 1":
+      card1 = card;
+      state = "waiting for click 2";
+      break;
+    case "waiting for click 2":
+      card2 = card;
+      state = "waiting for click 1";
+      setTimeout(function(){
+        if(card1.card == card2.card) {
+          scores[player]++;
+          state = "waiting for click 1";
+        }
+      else {
+        card1.flip = false;
+        card.flip = false;
+        player = +!player; //?
+      }
+      state = "waiting for click 1";
+    },3000);
+      state = "waiting for click 1";
+      break;
+    default:
+
+  }
   // TODO: determine which card was clicked on
   // TODO: determine what to do
 }
